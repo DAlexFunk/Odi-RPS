@@ -15,8 +15,8 @@ function getPlayerChoice(choice) {
     }
 }
 
-
-function playRound(playerChoice) {
+function playRound(event) {
+    let playerChoice = getPlayerChoice(event.currentTarget.textContent);
     let computerChoice = getComputerChoice();
     let winner = findWinnerArray[playerChoice][computerChoice];
     switch (winner) {
@@ -37,6 +37,11 @@ function playRound(playerChoice) {
     }
     
     scoreHeader.textContent = `Player: ${scores[0]}, Computer: ${scores[1]}`;
+
+    if (scores[0] >= 5 || scores[1] >= 5) {
+        buttons.forEach((button) => button.removeEventListener("click", playRound));
+        results.textContent = (scores[0] >= 5) ? "You beat the computer!" : "The computer beat you :(";
+    }
 }
 
 
@@ -59,14 +64,4 @@ const scoreHeader = document.querySelector("h1.score");
 const results = document.createElement("div");
 document.body.insertBefore(results, document.querySelector(".choices"));
 
-
-buttons.forEach((button) => {
-    button.addEventListener("click", function playGameOnClick() {
-        playRound(getPlayerChoice(button.textContent));
-
-        if (scores[0] === 5 || scores[1] === 5) {
-            button.removeEventListener("click", playGameOnClick);
-            results.textContent = (scores[0] === 5) ? "You beat the computer!" : "The computer beat you :(";
-        }
-    })
-});
+buttons.forEach((button) => button.addEventListener("click", playRound));
