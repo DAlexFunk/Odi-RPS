@@ -37,10 +37,6 @@ function playRound(playerChoice) {
     }
     
     scoreHeader.textContent = `Player: ${scores[0]}, Computer: ${scores[1]}`;
-
-    if (scores[0] === 5 || scores[1] === 5) {
-        console.log("WE HAVE A WINNER");
-    }
 }
 
 
@@ -48,7 +44,7 @@ function playRound(playerChoice) {
  * Index array at [playerChoice][computerChoice]
  * 0 = rock, 1 = paper, 2 = scissors for indexing
  * 1 = player win, -1 = computer win, 0 = tie for result
-*/
+ */
 let findWinnerArray = [
     [0, -1, 1],
     [1, 0, -1],
@@ -61,8 +57,16 @@ let scores = [0, 0];
 const buttons = document.querySelectorAll("button");
 const scoreHeader = document.querySelector("h1.score");
 const results = document.createElement("div");
-document.body.insertBefore(results, document.querySelector(".choices"))
+document.body.insertBefore(results, document.querySelector(".choices"));
+
 
 buttons.forEach((button) => {
-    button.addEventListener("click", () => playRound(getPlayerChoice(button.textContent)))
+    button.addEventListener("click", function playGameOnClick() {
+        playRound(getPlayerChoice(button.textContent));
+
+        if (scores[0] === 5 || scores[1] === 5) {
+            button.removeEventListener("click", playGameOnClick);
+            results.textContent = (scores[0] === 5) ? "You beat the computer!" : "The computer beat you :(";
+        }
+    })
 });
