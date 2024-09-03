@@ -2,19 +2,47 @@ function getComputerChoice() {
     return Math.floor(Math.random() * 3);
 }
 
-function getPlayerChoice() {
-    let choice = prompt("Choose rock, paper, or scissors");
+function getPlayerChoice(choice) {
     switch (choice) {
-        case "rock":
+        case "Rock":
             return 0;
-        case "paper":
+        case "Paper":
             return 1;
-        case "scissors":
+        case "Scissors":
             return 2;
         default:
             return "ERROR";
     }
 }
+
+
+function playRound(playerChoice) {
+    let computerChoice = getComputerChoice();
+    let winner = findWinnerArray[playerChoice][computerChoice];
+    switch (winner) {
+        case 1:
+            scores[0] += 1;
+            results.textContent = "You Won!";
+            break;
+        case -1:
+            scores[1] += 1;
+            results.textContent = "You Lost!";
+            break;
+        case 0:
+            results.textContent = "It was a tie!";
+            break;
+        default:
+            console.log("There was some terminal error");
+            break;
+    }
+    
+    scoreHeader.textContent = `Player: ${scores[0]}, Computer: ${scores[1]}`;
+
+    if (scores[0] === 5 || scores[1] === 5) {
+        console.log("WE HAVE A WINNER");
+    }
+}
+
 
 /*
  * Index array at [playerChoice][computerChoice]
@@ -30,32 +58,11 @@ let findWinnerArray = [
 // [Player Score, Computer Score]
 let scores = [0, 0];
 
-while (scores[0] + scores[1] != 5) {
-    let playerChoice = getPlayerChoice();
-    let computerChoice = getComputerChoice();
+const buttons = document.querySelectorAll("button");
+const scoreHeader = document.querySelector("h1.score");
+const results = document.createElement("div");
+document.body.insertBefore(results, document.querySelector(".choices"))
 
-    if (playerChoice === "ERROR") {
-        console.log("Unknown input");
-        continue;
-    }
-
-    let winner = findWinnerArray[playerChoice][computerChoice];
-    switch (winner) {
-        case 1:
-            console.log("You won");
-            scores[0] += 1;
-            break;
-        case -1:
-            console.log("You lost");
-            scores[1] += 1;
-            break;
-        case 0:
-            console.log("It was a tie");
-            break;
-        default:
-            console.log("There was some terminal error");
-            break;
-    }
-    
-    console.log(`Current Score: ${scores[0]} to ${scores[1]}`);
-}
+buttons.forEach((button) => {
+    button.addEventListener("click", () => playRound(getPlayerChoice(button.textContent)))
+});
